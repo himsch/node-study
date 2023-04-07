@@ -1,15 +1,31 @@
 import express from "express";
+import fs from "node:fs";
+import fsAsync from "node:fs/promises";
+
 const app = express();
 
-app.get("/sky/:id", (req, res, next) => {
-  // console.log(req.path);
-  // console.log(req.headers);
-  console.log(req.params);
-  console.log(req.query);
+app.use(express.json());
 
-  // res.json({ name: "song" });
-  // res.sendStatus(400);
-  res.setHeader("key", "value").status(201).send("created");
+app
+  .route("/posts")
+  .get((req, res, next) => {
+    res.status(201).send("GET: /posts");
+  })
+  .post(() => {
+    res.status(201).send("POST: /posts");
+  });
+
+app
+  .route("/posts/:id")
+  .put((req, res) => {
+    res.status(201).send("PUT: /posts/:id");
+  })
+  .delete((req, res) => {
+    res.status(201).send("DELETE: /posts/:id");
+  });
+
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).json({ message: "something went wrong" });
 });
-
 app.listen(8080);
